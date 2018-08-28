@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Павел Карев](https://up.htmlacademy.ru/javascript/15/user/20502).
-* Наставник: `Неизвестно`.
+* Наставник: `Сам себе Наставник`.
 
 ---
 
