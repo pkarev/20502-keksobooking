@@ -1,10 +1,11 @@
 'use strict';
 
 var MAX_GUESTS = 12;
-var MAP_PIN_ELEMENT_Y_MIN = 130;
-var MAP_PIN_ELEMENT_Y_MAX = 630;
-var MAP_PIN_WIDTH = 50;
-var MAP_PIN_HEIGHT = 70;
+var MAP_MARKER_Y_MIN = 130;
+var MAP_MERKER_Y_MAX = 630;
+var MAP_MARKER_WIDTH = 50;
+var MAP_MARKER_HEIGHT = 70;
+var MAP_MAIN_MARKER_PIN_HEIGHT = 20;
 
 var bookings = new Array(8);
 
@@ -21,24 +22,23 @@ var offerCheckins = ['12:00', '13:00', '14:00'];
 var offerCheckouts = ['12:00', '13:00', '14:00'];
 var offerFeaturesList = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var offerPhotos = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-
 var map = document.querySelector('.map');
+var mapCard;
+var mapPinMain = map.querySelector('.map__pin--main');
+var mapPinMainWidth = mapPinMain.getBoundingClientRect().width;
+var mapPinMainHeight = mapPinMain.getBoundingClientRect().height;
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-var mapPinMinX = MAP_PIN_WIDTH / 2;
-var mapPinMaxX = map.getBoundingClientRect().width - MAP_PIN_WIDTH / 2;
-var mapPinMinY = MAP_PIN_ELEMENT_Y_MIN;
-var mapPinMaxY = MAP_PIN_ELEMENT_Y_MAX;
+var mapPinMinX = MAP_MARKER_WIDTH / 2;
+var mapPinMaxX = map.getBoundingClientRect().width - MAP_MARKER_WIDTH / 2;
+var mapPinMinY = MAP_MARKER_Y_MIN;
+var mapPinMaxY = MAP_MERKER_Y_MAX;
+var isMapMainMarkerPinned = false;
+
+generateBookings(bookings);
 
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
-generateBookings(bookings);
-renderPins(bookings);
-
-var map = document.querySelector('.map');
-map.classList.remove('map--faded');
-var popupCard = createCardElement(bookings[0]);
-var mapFilters = map.querySelector('.map__filters-container');
-map.insertBefore(popupCard, mapFilters);
+mapPinMain.addEventListener('mouseup', activateBookingPage, {once: true});
 
 function generateBookings(array) {
   for (var i = 0; i < array.length; i++) {
@@ -83,7 +83,7 @@ function createCardElement(cardParams) {
   var photoElementTemplate = cardElement.querySelector('.popup__photo');
   var photoFragment = document.createDocumentFragment();
 
-  for (var i = 0; i < cardParams.offer.photos.length; i++ ) {
+  for (var i = 0; i < cardParams.offer.photos.length; i++) {
     var photo = photoElementTemplate.cloneNode(true);
     photo.src = cardParams.offer.photos[i];
     photoFragment.appendChild(photo);
@@ -94,16 +94,16 @@ function createCardElement(cardParams) {
 
   var cardFeaturesContainer = cardElement.querySelector('.popup__features');
   var featureElementTemplate = cardElement.querySelector('.popup__feature');
-  console.log(featureElementTemplate);
-  featureElementTemplate.className = 'popup__feature';
+  featureElementTemplate.classList = 'popup__feature';
 
   var featuresFragment = document.createDocumentFragment();
   var featuresArray = cardParams.offer.features.split(', ');
-  for (var i = 0; i < featuresArray.length; i++) {
+
+  for (var j = 0; j < featuresArray.length; j++) {
     var feature = featureElementTemplate.cloneNode(true);
-    var featureClass = 'popup__feature--' + featuresArray[i];
+    var featureClass = 'popup__feature--' + featuresArray[j];
     feature.classList.add(featureClass);
-    featuresFragment.appendChild(feature)
+    featuresFragment.appendChild(feature);
   }
 
   cardFeaturesContainer.innerHTML = '';
@@ -115,8 +115,8 @@ function createCardElement(cardParams) {
 function createPinElement(pinParams) {
   var pinElement = mapPinTemplate.cloneNode(true);
 
-  pinElement.style.left = pinParams.location.x - MAP_PIN_WIDTH / 2 + 'px';
-  pinElement.style.top = pinParams.location.y - MAP_PIN_HEIGHT + 'px';
+  pinElement.style.left = pinParams.location.x - MAP_MARKER_WIDTH / 2 + 'px';
+  pinElement.style.top = pinParams.location.y - MAP_MARKER_HEIGHT + 'px';
   pinElement.querySelector('img').src = pinParams.author.avatar;
   pinElement.querySelector('img').alt = pinParams.offer.title;
 
@@ -177,5 +177,96 @@ function shuffleArray(array) {
   }
 
   return arrayCopy;
+}
+
+var adForm = document.querySelector('.ad-form');
+var adFormAddress = adForm.querySelector('#address');
+var mapFiltersForm = document.querySelector('.map__filters');
+
+function activateBookingPage() {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  mapFiltersForm.classList.remove('map__filters--disabled');
+  enableFormFields(adForm);
+  enableFormFields(mapFiltersForm);
+  setAdFormAddress(isMapMainMarkerPinned);
+  isMapMainMarkerPinned = true;
+  renderPins(bookings);
+}
+
+function setAdFormAddress(isPinned) {
+  var mapPinMainX = mapPinMain.offsetLeft;
+  var mapPinMainY = mapPinMain.offsetTop;
+  var address;
+  if (isPinned) {
+    address = (mapPinMainX + mapPinMainWidth / 2) + ', ' + (mapPinMainY + mapPinMainHeight + MAP_MAIN_MARKER_PIN_HEIGHT);
+  } else {
+    address = (mapPinMainX + mapPinMainWidth / 2) + ', ' + (mapPinMainY + mapPinMainHeight);
+  }
+
+  adFormAddress.setAttribute('value', address);
+}
+
+function enableFormFields(form) {
+  var inputs = form.querySelectorAll('input');
+  var selects = form.querySelectorAll('select');
+  inputs.forEach(function (input) {
+    input.removeAttribute('disabled');
+  });
+  selects.forEach(function (select) {
+    select.removeAttribute('disabled');
+  });
+}
+
+map.addEventListener('click', function (evt) {
+  var target = evt.target;
+
+  while (target !== map) {
+    if (target.classList.toString() === 'map__pin') {
+      var clickedBooking = getBookingByPinLocation(target);
+      renderMapCard(clickedBooking);
+
+      return;
+    }
+
+    target = target.parentNode;
+  }
+});
+
+function getBookingByPinLocation(pin) {
+  var clickedPinLocation = (parseInt(pin.style.left, 10) + MAP_MARKER_WIDTH / 2) + ', ' + (parseInt(pin.style.top, 10) + MAP_MARKER_HEIGHT);
+  var currentBooking = bookings.find(function (booking) {
+    return booking.offer.address === clickedPinLocation;
+  });
+
+  return currentBooking;
+}
+
+function renderMapCard(cardData) {
+  if (mapCard) {
+    mapCard.innerHTML = createCardElement(cardData).innerHTML;
+  } else {
+    map.appendChild(createCardElement(cardData));
+    mapCard = map.querySelector('.map__card');
+  }
+
+  var popupClose = map.querySelector('.popup__close');
+  popupClose.addEventListener('click', function () {
+    closeMapCard();
+  });
+
+  mapCard.style.display = 'block';
+}
+
+document.addEventListener('keydown', onMapCardEscPress);
+
+function onMapCardEscPress(evt) {
+  if (evt.keyCode === 27) {
+    closeMapCard();
+  }
+}
+
+function closeMapCard() {
+  mapCard.style.display = 'none';
 }
 
