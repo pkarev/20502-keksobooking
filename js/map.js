@@ -2,7 +2,7 @@
 
 var MAX_GUESTS = 12;
 var MAP_MARKER_Y_MIN = 130;
-var MAP_MERKER_Y_MAX = 630;
+var MAP_MARKER_Y_MAX = 630;
 var MAP_MARKER_WIDTH = 50;
 var MAP_MARKER_HEIGHT = 70;
 var MAP_MAIN_MARKER_PIN_HEIGHT = 20;
@@ -31,7 +31,7 @@ var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map_
 var mapPinMinX = MAP_MARKER_WIDTH / 2;
 var mapPinMaxX = map.getBoundingClientRect().width - MAP_MARKER_WIDTH / 2;
 var mapPinMinY = MAP_MARKER_Y_MIN;
-var mapPinMaxY = MAP_MERKER_Y_MAX;
+var mapPinMaxY = MAP_MARKER_Y_MAX;
 var isMapMainMarkerPinned = false;
 
 generateBookings(bookings);
@@ -193,6 +193,51 @@ function activateBookingPage() {
   isMapMainMarkerPinned = true;
   renderPins(bookings);
   setAvailableGuestsOptions();
+
+  mapPinMain.addEventListener('mousedown', function (downEvt) {
+    downEvt.preventDefault();
+
+    var currentCoords = {
+      x: mapPinMain.clientX,
+      y: mapPinMain.clientY
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+
+    function onMouseMove(moveEvt) {
+      moveEvt.preventDefault();
+
+      var shift = {
+        x: currentCoords.x - moveEvt.clientX,
+        y: currentCoords.y - moveEvt.clientY
+      };
+
+      currentCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      if (mapPinMain.offsetLeft - shift.x >= 0 && mapPinMain.offsetParent.clientWidth - mapPinMain.offsetLeft - mapPinMain.clientWidth >= 0) {
+        mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+      } else if (mapPinMain.offsetParent.clientWidth - mapPinMain.offsetLeft - mapPinMain.clientWidth < 0) {
+        mapPinMain.style.left = (mapPinMain.offsetParent.clientWidth - mapPinMain.clientWidth) + 'px';
+      }
+      if (mapPinMain.offsetTop - shift.y >= MAP_MARKER_Y_MIN - mapPinMain.clientHeight && mapPinMain.offsetTop - shift.y <= MAP_MARKER_Y_MAX - mapPinMain.clientHeight) {
+        mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+      }
+
+      setAdFormAddress();
+    }
+
+    function onMouseUp(upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      setAdFormAddress();
+    }
+  });
 }
 
 function setAdFormAddress(isPinned) {
