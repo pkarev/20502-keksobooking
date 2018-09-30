@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var MAP_MARKER_Y_MIN = 130;
+  var MAP_MARKER_Y_MAX = 630;
+
   var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
   var isMapMainMarkerPinned = false;
@@ -45,7 +48,7 @@
           mapPinMain.style.left = (mapPinMain.offsetParent.clientWidth - mapPinMain.clientWidth) + 'px';
         }
 
-        if (mapPinMain.offsetTop - shift.y >= window.data.mainMarkerYMin - mapPinMain.clientHeight && mapPinMain.offsetTop - shift.y <= window.data.mainMarkerYMax - mapPinMain.clientHeight) {
+        if (mapPinMain.offsetTop - shift.y >= MAP_MARKER_Y_MIN - mapPinMain.clientHeight && mapPinMain.offsetTop - shift.y <= MAP_MARKER_Y_MAX - mapPinMain.clientHeight) {
           mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
         }
 
@@ -78,9 +81,10 @@
   });
 
   function getBookingByPinLocation(pin) {
-    var clickedPinLocation = (parseInt(pin.style.left, 10) + window.pin.mapMarkerWidth / 2) + ', ' + (parseInt(pin.style.top, 10) + window.pin.mapMarkerHeight);
+    var clickedPinX = parseInt(pin.style.left, 10) + window.pin.mapMarkerWidth / 2;
+    var clickedPinY = parseInt(pin.style.top, 10) + window.pin.mapMarkerHeight;
     var currentBooking = window.data.bookings.find(function (booking) {
-      return booking.offer.address === clickedPinLocation;
+      return booking.location.x === clickedPinX && booking.location.y === clickedPinY;
     });
 
     return currentBooking;
