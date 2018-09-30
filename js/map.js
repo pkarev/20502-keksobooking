@@ -1,21 +1,23 @@
 'use strict';
 
 (function () {
-  var MAP_MARKER_Y_MIN = 130;
-  var MAP_MARKER_Y_MAX = 630;
-
   var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
-  var isMapMainMarkerPinned = false;
+  var MainMarkerBoundarie = {
+    yMin: 37,
+    yMax: 537,
+    xMin: 0,
+    xMax: 1138
+  };
 
   mapPinMain.addEventListener('mouseup', activateBookingPage, {once: true});
 
   function activateBookingPage() {
     map.classList.remove('map--faded');
-    window.form.enableForms();
-    window.form.setAdFormAddress(isMapMainMarkerPinned);
-    isMapMainMarkerPinned = true;
-    window.pin.renderPins();
+    window.util.enableForm(window.mapFilterForm.form);
+    window.util.enableForm(window.adForm.form);
+    window.adForm.setInitialAdFormAddress();
+    window.mapFilterForm.updatePins(window.bookings);
     window.setAvailableGuestsOptions();
 
     mapPinMain.addEventListener('mousedown', function (downEvt) {
@@ -42,17 +44,10 @@
           y: moveEvt.clientY
         };
 
-        if (mapPinMain.offsetLeft - shift.x >= 0 && mapPinMain.offsetParent.clientWidth - mapPinMain.offsetLeft - mapPinMain.clientWidth >= 0) {
-          mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
-        } else if (mapPinMain.offsetParent.clientWidth - mapPinMain.offsetLeft - mapPinMain.clientWidth < 0) {
-          mapPinMain.style.left = (mapPinMain.offsetParent.clientWidth - mapPinMain.clientWidth) + 'px';
-        }
+        mapPinMain.style.left = window.util.getDraggedCoord(mapPinMain.offsetLeft - shift.x, MainMarkerBoundarie.xMin, MainMarkerBoundarie.xMax) + 'px';
+        mapPinMain.style.top = window.util.getDraggedCoord(mapPinMain.offsetTop - shift.y, MainMarkerBoundarie.yMin, MainMarkerBoundarie.yMax) + 'px';
 
-        if (mapPinMain.offsetTop - shift.y >= MAP_MARKER_Y_MIN - mapPinMain.clientHeight && mapPinMain.offsetTop - shift.y <= MAP_MARKER_Y_MAX - mapPinMain.clientHeight) {
-          mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
-        }
-
-        window.form.setAdFormAddress();
+        window.adForm.setAdFormAddress();
       }
 
       function onMouseUp(upEvt) {
@@ -60,7 +55,7 @@
 
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
-        window.form.setAdFormAddress();
+        window.adForm.setAdFormAddress();
       }
     });
   }
@@ -70,8 +65,7 @@
 
     while (target !== map) {
       if (target.classList.toString() === 'map__pin') {
-        var clickedBooking = getBookingByPinLocation(target);
-        window.card.renderMapCard(clickedBooking);
+        window.card.renderMapCard(window.bookings[target.dataset.id]);
 
         return;
       }
@@ -80,21 +74,12 @@
     }
   });
 
-  function getBookingByPinLocation(pin) {
-    var clickedPinX = parseInt(pin.style.left, 10) + window.pin.mapMarkerWidth / 2;
-    var clickedPinY = parseInt(pin.style.top, 10) + window.pin.mapMarkerHeight;
-    var currentBooking = window.data.bookings.find(function (booking) {
-      return booking.location.x === clickedPinX && booking.location.y === clickedPinY;
-    });
-
-    return currentBooking;
-  }
-
   document.addEventListener('keydown', onMapCardEscPress);
 
   function onMapCardEscPress(evt) {
     window.util.isEscPressed(evt, window.card.closeMapCard);
   }
+
 })();
 
 

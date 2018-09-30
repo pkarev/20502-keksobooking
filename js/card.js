@@ -4,13 +4,19 @@
   var map = document.querySelector('.map');
   var mapCard;
   var isMapCardRendered = false;
+  var offerTypes = {
+    palace: 'Дворец',
+    flat: 'Квартира',
+    house: 'Бунгало',
+    bungalo: 'Дом'
+  };
 
   function createCardElement(cardParams) {
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
     var cardElement = cardTemplate.cloneNode(true);
     cardElement.querySelector('.popup__title').textContent = cardParams.offer.title;
     cardElement.querySelector('.popup__text--price').textContent = cardParams.offer.price + ' ₽/ночь';
-    cardElement.querySelector('.popup__type').textContent = window.data.offerTypes[cardParams.offer.type];
+    cardElement.querySelector('.popup__type').textContent = offerTypes[cardParams.offer.type];
     cardElement.querySelector('.popup__text--capacity').textContent = cardParams.offer.rooms + ' комнаты для ' + cardParams.offer.guests + ' гостей';
     cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + cardParams.offer.checkin + ', выезд до ' + cardParams.offer.checkout;
     cardElement.querySelector('.popup__description').textContent = cardParams.offer.description;

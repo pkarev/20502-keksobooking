@@ -6,6 +6,6 @@
   window.onAddNewBookingSuccess = function () {
     var successElement = successTemplate.cloneNode('true');
     document.body.appendChild(successElement);
-    window.form.resetAdForm();
+    window.adForm.resetAdForm();
   };
 })();

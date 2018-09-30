@@ -42,7 +42,7 @@
     accommodationCheckInSelect.querySelector('[value="' + checkOut + '"]').selected = true;
   });
 
-  var DISABLED_GUESTS_OPTIONS_PER_ROOM_NUMBER = {
+  var roomsToDisabledGuests = {
     1: [2, 3, 0],
     2: [3, 0],
     3: [0],
@@ -64,7 +64,7 @@
 
   function setAvailableGuestsOptions() {
     var rooms = accommodationRoomsNumber.value;
-    var disabledGuestsValues = DISABLED_GUESTS_OPTIONS_PER_ROOM_NUMBER[rooms];
+    var disabledGuestsValues = roomsToDisabledGuests[rooms];
     [].forEach.call(accommodationGuestsNumber.options, function (item) {
       if (disabledGuestsValues.indexOf(Number(item.value)) !== -1) {
         item.disabled = true;

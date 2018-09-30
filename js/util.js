@@ -9,20 +9,39 @@
     }
   }
 
-  function shuffleArray(array) {
-    var arrayCopy = array.slice();
-    for (var l = arrayCopy.length - 1; l > 0; l--) {
-      var m = Math.floor(Math.random() * (l + 1));
-      var temp = arrayCopy[l];
-      arrayCopy[l] = arrayCopy[m];
-      arrayCopy[m] = temp;
+  function getDraggedCoord(dragValue, minLimit, maxLimit) {
+    if (dragValue < minLimit) {
+      return minLimit;
     }
 
-    return arrayCopy;
+    if (dragValue > maxLimit) {
+      return maxLimit;
+    }
+
+    return dragValue;
+  }
+
+  function enableForm(form) {
+    var formClass = form.classList[0];
+    var formDisabledClass = formClass + '--disabled';
+    form.classList.remove(formDisabledClass);
+    enableFormFields(form);
+  }
+
+  function enableFormFields(form) {
+    var inputs = form.querySelectorAll('input');
+    var selects = form.querySelectorAll('select');
+    inputs.forEach(function (input) {
+      input.removeAttribute('disabled');
+    });
+    selects.forEach(function (select) {
+      select.removeAttribute('disabled');
+    });
   }
 
   window.util = {
-    shuffleArray: shuffleArray,
-    isEscPressed: isEscPressed
+    isEscPressed: isEscPressed,
+    getDraggedCoord: getDraggedCoord,
+    enableForm: enableForm
   };
 })();
