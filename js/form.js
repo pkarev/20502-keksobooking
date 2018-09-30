@@ -49,8 +49,18 @@
     });
   }
 
+  function resetAdForm() {
+    adForm.reset();
+  }
+
+  adForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(mapFiltersForm), window.onAddNewBookingSuccess, window.error.onAddNewBookingError);
+  });
+
   window.form = {
     setAdFormAddress: setAdFormAddress,
-    enableForms: enableForms
+    enableForms: enableForms,
+    resetAdForm: resetAdForm
   };
 })();

@@ -34,7 +34,7 @@
     featureElementTemplate.classList = 'popup__feature';
 
     var featuresFragment = document.createDocumentFragment();
-    var featuresArray = cardParams.offer.features.split(', ');
+    var featuresArray = cardParams.offer.features;
 
     for (var j = 0; j < featuresArray.length; j++) {
       var feature = featureElementTemplate.cloneNode(true);

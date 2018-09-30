@@ -53,6 +53,10 @@
     setAvailableGuestsOptions();
   });
 
+  accommodationGuestsNumber.addEventListener('input', function () {
+    updateGuestsCustomValidity();
+  });
+
   function setAccomodationMinPrice(price) {
     accommodationPriceInput.setAttribute('min', price);
     accommodationPriceInput.setAttribute('placeholder', price);
@@ -69,8 +73,14 @@
       }
     });
 
+    updateGuestsCustomValidity();
+  }
+
+  function updateGuestsCustomValidity() {
     if (accommodationGuestsNumber.options[accommodationGuestsNumber.selectedIndex].disabled) {
       accommodationGuestsNumber.setCustomValidity('Недопустимое количество гостей. Выбирите доступное значение из списка');
+    } else {
+      accommodationGuestsNumber.setCustomValidity('');
     }
   }
 
