@@ -14,27 +14,27 @@
   var housingFeatures = mapFiltersForm.querySelector('#housing-features');
   var filteredPins;
 
-  housingTypeSelect.addEventListener('change', function (evt) {
+  var onHousingTypeChange = window.util.debounce(function (evt) {
     housingTypeFilter = evt.target.value;
     updatePins();
   });
 
-  housingPriceSelect.addEventListener('change', function (evt) {
+  var onhousingPriceChange = window.util.debounce(function (evt) {
     housingPriceFilter = evt.target.value;
     updatePins();
   });
 
-  housingRoomsSelect.addEventListener('change', function (evt) {
+  var onHousingRoomsChange = window.util.debounce(function (evt) {
     housingRoomsFilter = +evt.target.value;
     updatePins();
   });
 
-  housingGuestsSelect.addEventListener('change', function (evt) {
+  var onHousingGuestsChange = window.util.debounce(function (evt) {
     housingGuestsFilter = +evt.target.value;
     updatePins();
   });
 
-  housingFeatures.addEventListener('change', function (evt) {
+  var onHousingFeaturesChange = window.util.debounce(function (evt) {
     if (evt.target.checked) {
       housingFeaturesFilter.push(evt.target.value);
     } else {
@@ -45,6 +45,13 @@
 
     updatePins();
   });
+
+
+  housingTypeSelect.addEventListener('change', onHousingTypeChange);
+  housingPriceSelect.addEventListener('change', onhousingPriceChange);
+  housingRoomsSelect.addEventListener('change', onHousingRoomsChange);
+  housingGuestsSelect.addEventListener('change', onHousingGuestsChange);
+  housingFeatures.addEventListener('change', onHousingFeaturesChange);
 
   function updatePins() {
     clearPins();

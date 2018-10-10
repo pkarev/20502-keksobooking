@@ -2,6 +2,7 @@
 
 (function () {
   var ESC_KEYCODE = 27;
+  var DEBOUNCE_INTERVAL = 500;
 
   function isEscPressed(evt, action) {
     if (evt.keyCode === ESC_KEYCODE) {
@@ -39,9 +40,24 @@
     });
   }
 
+  function debounce(fun) {
+    var lastTimeout = null;
+
+    return function () {
+      var args = arguments;
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(function () {
+        fun.apply(null, args);
+      }, DEBOUNCE_INTERVAL);
+    };
+  }
+
   window.util = {
     isEscPressed: isEscPressed,
     getDraggedCoord: getDraggedCoord,
-    enableForm: enableForm
+    enableForm: enableForm,
+    debounce: debounce
   };
 })();
