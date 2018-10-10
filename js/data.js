@@ -5,6 +5,5 @@
 
   function onGetBookingsSuccess(response) {
     window.bookings = response;
-    console.log(window.bookings);
   }
 })();

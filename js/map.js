@@ -17,7 +17,7 @@
     window.util.enableForm(window.mapFilterForm.form);
     window.util.enableForm(window.adForm.form);
     window.adForm.setInitialAdFormAddress();
-    window.mapFilterForm.updatePins(window.bookings);
+    window.mapFilterForm.updatePins(window.mapFilterForm.filteredPins);
     window.setAvailableGuestsOptions();
 
     mapPinMain.addEventListener('mousedown', function (downEvt) {
@@ -65,7 +65,7 @@
 
     while (target !== map) {
       if (target.classList.toString() === 'map__pin') {
-        window.card.renderMapCard(window.bookings[target.dataset.id]);
+        window.card.renderMapCard(window.mapFilterForm.filteredPins[target.dataset.id]);
 
         return;
       }

@@ -7,8 +7,8 @@
   var offerTypes = {
     palace: 'Дворец',
     flat: 'Квартира',
-    house: 'Бунгало',
-    bungalo: 'Дом'
+    house: 'Дом',
+    bungalo: 'Бунгало'
   };
 
   function createCardElement(cardParams) {

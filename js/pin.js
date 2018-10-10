@@ -22,7 +22,7 @@
 
   function renderPins(pins) {
     var pinsFragment = document.createDocumentFragment();
-    for (var i = 0; i < MAX_PINS_TO_SHOW; i++) {
+    for (var i = 0; i < pins.length && i < MAX_PINS_TO_SHOW; i++) {
       pinsFragment.appendChild(window.pin.createPin(pins[i], i));
     }
 
