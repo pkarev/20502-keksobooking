@@ -1,8 +1,7 @@
 'use strict';
 
 (function () {
-  var map = document.querySelector('.map');
-  var mapPinMain = map.querySelector('.map__pin--main');
+  var mapPinMain = document.querySelector('.map__pin--main');
   var MAIN_MARKER_SIZES = {
     width: 65,
     height: 79,
@@ -11,6 +10,16 @@
 
   var adForm = document.querySelector('.ad-form');
   var adFormAddress = adForm.querySelector('#address');
+  var adFormReset = adForm.querySelector('.ad-form__reset');
+
+  adFormReset.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    resetAdForm();
+    window.mapFilterForm.clearPins();
+    window.card.closeMapCard();
+    window.map.reset();
+    mapPinMain.addEventListener('mouseup', window.map.activateBookingPage, {once: true});
+  });
 
   function setAdFormAddress() {
     var mapPinMainX = mapPinMain.offsetLeft;
@@ -28,6 +37,7 @@
 
   function resetAdForm() {
     adForm.reset();
+    adFormAddress.setAttribute('value', '');
   }
 
   adForm.addEventListener('submit', function (evt) {

@@ -155,6 +155,7 @@
 
   window.mapFilterForm = {
     updatePins: updatePins,
+    clearPins: clearPins,
     form: mapFiltersForm,
     filteredPins: filteredPins
   };

@@ -3,6 +3,10 @@
 (function () {
   var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
+  var mapPinMainInitalPosition = {
+    x: mapPinMain.offsetLeft,
+    y: mapPinMain.offsetTop,
+  };
   var MainMarkerBoundarie = {
     yMin: 37,
     yMax: 537,
@@ -79,6 +83,18 @@
   function onMapCardEscPress(evt) {
     window.util.isEscPressed(evt, window.card.closeMapCard);
   }
+
+  function resetMap() {
+    map.classList.add('map--faded');
+    mapPinMain.style.left = mapPinMainInitalPosition.x;
+    mapPinMain.style.top = mapPinMainInitalPosition.y;
+  }
+
+  window.map = {
+    pinMain: mapPinMain,
+    reset: resetMap,
+    activateBookingPage: activateBookingPage
+  };
 
 })();
 

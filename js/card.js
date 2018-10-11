@@ -71,6 +71,10 @@
   }
 
   function closeMapCard() {
+    if (!mapCard) {
+      return;
+    }
+
     mapCard.style.display = 'none';
   }
 
