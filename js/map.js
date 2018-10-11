@@ -1,21 +1,32 @@
 'use strict';
 
 (function () {
-  var MAP_MARKER_Y_MIN = 130;
-  var MAP_MARKER_Y_MAX = 630;
-
   var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
-  var isMapMainMarkerPinned = false;
+  var mapPinMainInitalPosition = {
+    x: mapPinMain.offsetLeft,
+    y: mapPinMain.offsetTop,
+  };
+  var MainMarkerBoundarie = {
+    Y_MIN: (130 - window.adForm.mainMarkerSize.TOTAL_HEIGHT),
+    Y_MAX: (630 - window.adForm.mainMarkerSize.TOTAL_HEIGHT),
+    X_MIN: 0,
+    X_MAX: 1138
+  };
 
   mapPinMain.addEventListener('mouseup', activateBookingPage, {once: true});
+  document.addEventListener('keydown', onMainPinEnterPress);
+
+  function onMainPinEnterPress(evt) {
+    window.util.isEnterPressed(evt, activateBookingPage);
+  }
 
   function activateBookingPage() {
+    document.removeEventListener('keydown', onMainPinEnterPress);
     map.classList.remove('map--faded');
-    window.form.enableForms();
-    window.form.setAdFormAddress(isMapMainMarkerPinned);
-    isMapMainMarkerPinned = true;
-    window.pin.renderPins();
+    window.util.enableForm(window.mapFiltersForm.form);
+    window.adForm.setInitialAdFormAddress();
+    window.mapFiltersForm.updatePins(window.mapFiltersForm.filteredPins);
     window.setAvailableGuestsOptions();
 
     mapPinMain.addEventListener('mousedown', function (downEvt) {
@@ -42,17 +53,10 @@
           y: moveEvt.clientY
         };
 
-        if (mapPinMain.offsetLeft - shift.x >= 0 && mapPinMain.offsetParent.clientWidth - mapPinMain.offsetLeft - mapPinMain.clientWidth >= 0) {
-          mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
-        } else if (mapPinMain.offsetParent.clientWidth - mapPinMain.offsetLeft - mapPinMain.clientWidth < 0) {
-          mapPinMain.style.left = (mapPinMain.offsetParent.clientWidth - mapPinMain.clientWidth) + 'px';
-        }
+        mapPinMain.style.left = window.util.getDraggedCoord(mapPinMain.offsetLeft - shift.x, MainMarkerBoundarie.X_MIN, MainMarkerBoundarie.X_MAX) + 'px';
+        mapPinMain.style.top = window.util.getDraggedCoord(mapPinMain.offsetTop - shift.y, MainMarkerBoundarie.Y_MIN, MainMarkerBoundarie.Y_MAX) + 'px';
 
-        if (mapPinMain.offsetTop - shift.y >= MAP_MARKER_Y_MIN - mapPinMain.clientHeight && mapPinMain.offsetTop - shift.y <= MAP_MARKER_Y_MAX - mapPinMain.clientHeight) {
-          mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
-        }
-
-        window.form.setAdFormAddress();
+        window.adForm.setAdFormAddress();
       }
 
       function onMouseUp(upEvt) {
@@ -60,7 +64,7 @@
 
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
-        window.form.setAdFormAddress();
+        window.adForm.setAdFormAddress();
       }
     });
   }
@@ -70,8 +74,9 @@
 
     while (target !== map) {
       if (target.classList.toString() === 'map__pin') {
-        var clickedBooking = getBookingByPinLocation(target);
-        window.card.renderMapCard(clickedBooking);
+        window.pin.clearPinsActiveClass();
+        target.classList.add('map__pin--active');
+        window.card.renderMapCard(window.mapFiltersForm.filteredPins[target.dataset.id]);
 
         return;
       }
@@ -80,21 +85,25 @@
     }
   });
 
-  function getBookingByPinLocation(pin) {
-    var clickedPinX = parseInt(pin.style.left, 10) + window.pin.mapMarkerWidth / 2;
-    var clickedPinY = parseInt(pin.style.top, 10) + window.pin.mapMarkerHeight;
-    var currentBooking = window.data.bookings.find(function (booking) {
-      return booking.location.x === clickedPinX && booking.location.y === clickedPinY;
-    });
-
-    return currentBooking;
-  }
-
   document.addEventListener('keydown', onMapCardEscPress);
 
   function onMapCardEscPress(evt) {
     window.util.isEscPressed(evt, window.card.closeMapCard);
   }
+
+  function resetMap() {
+    map.classList.add('map--faded');
+    mapPinMain.style.left = mapPinMainInitalPosition.x;
+    mapPinMain.style.top = mapPinMainInitalPosition.y;
+  }
+
+  window.map = {
+    pinMain: mapPinMain,
+    reset: resetMap,
+    activateBookingPage: activateBookingPage,
+    onMainPinEnterPress: onMainPinEnterPress
+  };
+
 })();
 
 

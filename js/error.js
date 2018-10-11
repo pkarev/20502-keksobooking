@@ -6,6 +6,7 @@
   window.error = {
     onAddNewBookingError: function (errorMessage) {
       document.body.appendChild(createError(errorMessage, onSaveErrorCloseClick));
+      document.addEventListener('keydown', onErrorMessageEscPress);
     },
     onGetBookingsError: function (errorMessage) {
       document.body.appendChild(createError(errorMessage, onGetErrorCloseClick));
@@ -16,8 +17,18 @@
     window.location.reload();
   }
 
-  function onSaveErrorCloseClick(evt) {
-    var error = evt.target.closest('.error');
+  function onSaveErrorCloseClick() {
+    closeError();
+  }
+
+  function onErrorMessageEscPress(evt) {
+    evt.preventDefault();
+    window.util.isEscPressed(evt, closeError);
+    document.removeEventListener('keydown', onErrorMessageEscPress);
+  }
+
+  function closeError() {
+    var error = document.querySelector('.error');
     error.parentNode.removeChild(error);
   }
 

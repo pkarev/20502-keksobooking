@@ -42,11 +42,11 @@
     accommodationCheckInSelect.querySelector('[value="' + checkOut + '"]').selected = true;
   });
 
-  var DISABLED_GUESTS_OPTIONS_PER_ROOM_NUMBER = {
-    1: [2, 3, 0],
-    2: [3, 0],
-    3: [0],
-    100: [1, 2, 3],
+  var roomsToAvailableGuests = {
+    1: ['для 1 гостя'],
+    2: ['для 2 гостей', 'для 1 гостя'],
+    3: ['для 3 гостей', 'для 2 гостей', 'для 1 гостя'],
+    100: ['не для гостей']
   };
 
   accommodationRoomsNumber.addEventListener('input', function () {
@@ -64,9 +64,9 @@
 
   function setAvailableGuestsOptions() {
     var rooms = accommodationRoomsNumber.value;
-    var disabledGuestsValues = DISABLED_GUESTS_OPTIONS_PER_ROOM_NUMBER[rooms];
+    var availableGuestsOptions = roomsToAvailableGuests[rooms];
     [].forEach.call(accommodationGuestsNumber.options, function (item) {
-      if (disabledGuestsValues.indexOf(Number(item.value)) !== -1) {
+      if (availableGuestsOptions.indexOf(item.text) === -1) {
         item.disabled = true;
       } else {
         item.disabled = false;
