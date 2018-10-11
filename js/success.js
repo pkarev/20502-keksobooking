@@ -6,7 +6,7 @@
   window.onAddNewBookingSuccess = function () {
     document.body.appendChild(createSuccess());
     window.adForm.resetAdForm();
-    window.mapFilterForm.clearPins();
+    window.mapFiltersForm.clearPins();
     window.card.closeMapCard();
     window.map.reset();
     window.map.pinMain.addEventListener('mouseup', window.map.activateBookingPage, {once: true});

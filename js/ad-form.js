@@ -2,10 +2,11 @@
 
 (function () {
   var mapPinMain = document.querySelector('.map__pin--main');
-  var MAIN_MARKER_SIZES = {
-    width: 65,
-    height: 79,
-    pinHeight: 14
+  var mainMarkerSize = {
+    WIDTH: 65,
+    MARKER_HEIGHT: 65,
+    PIN_HEIGHT: 14,
+    TOTAL_HEIGHT: 79
   };
 
   var adForm = document.querySelector('.ad-form');
@@ -21,23 +22,24 @@
   adFormReset.addEventListener('click', function (evt) {
     evt.preventDefault();
     resetAdForm();
-    window.mapFilterForm.clearPins();
+    window.mapFiltersForm.clearPins();
     window.card.closeMapCard();
     window.map.reset();
+    window.mapFiltersForm.reset();
     mapPinMain.addEventListener('mouseup', window.map.activateBookingPage, {once: true});
   });
 
   function setAdFormAddress() {
     var mapPinMainX = mapPinMain.offsetLeft;
     var mapPinMainY = mapPinMain.offsetTop;
-    var address = (mapPinMainX + MAIN_MARKER_SIZES.width / 2) + ', ' + (mapPinMainY + MAIN_MARKER_SIZES.height + MAIN_MARKER_SIZES.pinHeight);
+    var address = (mapPinMainX + mainMarkerSize.WIDTH / 2) + ', ' + (mapPinMainY + mainMarkerSize.TOTAL_HEIGHT);
     adFormAddress.setAttribute('value', address);
   }
 
   function setInitialAdFormAddress() {
     var mapPinMainX = mapPinMain.offsetLeft;
     var mapPinMainY = mapPinMain.offsetTop;
-    var address = (mapPinMainX + MAIN_MARKER_SIZES.width / 2) + ', ' + (mapPinMainY + MAIN_MARKER_SIZES.height);
+    var address = (mapPinMainX + mainMarkerSize.WIDTH / 2) + ', ' + (mapPinMainY + mainMarkerSize.HEIGHT);
     adFormAddress.setAttribute('value', address);
   }
 
@@ -55,6 +57,7 @@
     setAdFormAddress: setAdFormAddress,
     setInitialAdFormAddress: setInitialAdFormAddress,
     resetAdForm: resetAdForm,
-    form: adForm
+    form: adForm,
+    mainMarkerSize: mainMarkerSize
   };
 })();

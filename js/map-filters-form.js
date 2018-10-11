@@ -56,7 +56,7 @@
   function updatePins() {
     clearPins();
     filteredPins = applyFilters(window.bookings);
-    window.mapFilterForm.filteredPins = filteredPins;
+    window.mapFiltersForm.filteredPins = filteredPins;
     window.pin.renderPins(filteredPins);
   }
 
@@ -153,10 +153,20 @@
     return isMatches;
   }
 
-  window.mapFilterForm = {
+  function resetMapFilters() {
+    mapFiltersForm.reset();
+    housingTypeFilter = null;
+    housingPriceFilter = null;
+    housingRoomsFilter = null;
+    housingGuestsFilter = null;
+    housingFeaturesFilter = [];
+  }
+
+  window.mapFiltersForm= {
     updatePins: updatePins,
     clearPins: clearPins,
     form: mapFiltersForm,
-    filteredPins: filteredPins
+    filteredPins: filteredPins,
+    reset: resetMapFilters
   };
 })();
