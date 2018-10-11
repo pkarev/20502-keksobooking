@@ -9,8 +9,9 @@
     window.mapFiltersForm.clearPins();
     window.card.closeMapCard();
     window.map.reset();
+    window.map.pinMain.removeEventListener('mousedown', window.map.onMouseDown);
+    window.map.pinMain.addEventListener('keydown', window.map.onMainPinEnterPress, {once: true});
     window.map.pinMain.addEventListener('mouseup', window.map.activateBookingPage, {once: true});
-    document.addEventListener('keydown', window.map.onMainPinEnterPress);
   };
 
   function createSuccess() {
