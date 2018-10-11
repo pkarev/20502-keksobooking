@@ -47,11 +47,26 @@
   });
 
 
-  housingTypeSelect.addEventListener('change', onHousingTypeChange);
-  housingPriceSelect.addEventListener('change', onhousingPriceChange);
-  housingRoomsSelect.addEventListener('change', onHousingRoomsChange);
-  housingGuestsSelect.addEventListener('change', onHousingGuestsChange);
-  housingFeatures.addEventListener('change', onHousingFeaturesChange);
+  housingTypeSelect.addEventListener('change', function (evt) {
+    window.card.closeMapCard();
+    onHousingTypeChange(evt);
+  });
+  housingPriceSelect.addEventListener('change', function (evt) {
+    window.card.closeMapCard();
+    onhousingPriceChange(evt);
+  });
+  housingRoomsSelect.addEventListener('change', function (evt) {
+    window.card.closeMapCard();
+    onHousingRoomsChange(evt);
+  });
+  housingGuestsSelect.addEventListener('change', function (evt) {
+    window.card.closeMapCard();
+    onHousingGuestsChange(evt);
+  });
+  housingFeatures.addEventListener('change', function (evt) {
+    window.card.closeMapCard();
+    onHousingFeaturesChange(evt);
+  });
 
   function updatePins() {
     clearPins();
@@ -162,7 +177,7 @@
     housingFeaturesFilter = [];
   }
 
-  window.mapFiltersForm= {
+  window.mapFiltersForm = {
     updatePins: updatePins,
     clearPins: clearPins,
     form: mapFiltersForm,

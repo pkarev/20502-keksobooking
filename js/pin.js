@@ -29,12 +29,23 @@
     document.querySelector('.map__pins').appendChild(pinsFragment);
   }
 
+  function clearPinsActiveClass() {
+    var mapPins = document.querySelectorAll('.map__pin');
+    [].forEach.call(mapPins, function (pin) {
+      if (pin.classList.contains('map__pin--main')) {
+        return;
+      }
+      pin.classList.remove('map__pin--active');
+    });
+  }
+
   window.pin = {
     ordinaryMarkerWidth: OrdinaryMarkerSize.width,
     ordinaryMarkerHeight: OrdinaryMarkerSize.height,
 
     createPin: createPin,
-    renderPins: renderPins
+    renderPins: renderPins,
+    clearPinsActiveClass: clearPinsActiveClass
   };
 })();
 

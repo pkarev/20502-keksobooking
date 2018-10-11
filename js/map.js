@@ -19,7 +19,6 @@
   function activateBookingPage() {
     map.classList.remove('map--faded');
     window.util.enableForm(window.mapFiltersForm.form);
-    window.util.enableForm(window.adForm.form);
     window.adForm.setInitialAdFormAddress();
     window.mapFiltersForm.updatePins(window.mapFiltersForm.filteredPins);
     window.setAvailableGuestsOptions();
@@ -69,6 +68,8 @@
 
     while (target !== map) {
       if (target.classList.toString() === 'map__pin') {
+        window.pin.clearPinsActiveClass();
+        target.classList.add('map__pin--active');
         window.card.renderMapCard(window.mapFiltersForm.filteredPins[target.dataset.id]);
 
         return;
@@ -93,7 +94,7 @@
   window.map = {
     pinMain: mapPinMain,
     reset: resetMap,
-    activateBookingPage: activateBookingPage
+    activateBookingPage: activateBookingPage,
   };
 
 })();
