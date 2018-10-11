@@ -3,12 +3,19 @@
 (function () {
   var keyCode = {
     ESC: 27,
-    TAB: 9
+    TAB: 9,
+    ENTER: 13
   };
   var DEBOUNCE_INTERVAL = 500;
 
   function isEscPressed(evt, action) {
     if (evt.keyCode === keyCode.ESC) {
+      action();
+    }
+  }
+
+  function isEnterPressed(evt, action) {
+    if (evt.keyCode === keyCode.ENTER) {
       action();
     }
   }
@@ -58,10 +65,11 @@
   }
 
   window.util = {
+    keyCode: keyCode,
     isEscPressed: isEscPressed,
+    isEnterPressed: isEnterPressed,
     getDraggedCoord: getDraggedCoord,
     enableForm: enableForm,
-    debounce: debounce,
-    keyCode: keyCode
+    debounce: debounce
   };
 })();

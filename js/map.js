@@ -15,8 +15,14 @@
   };
 
   mapPinMain.addEventListener('mouseup', activateBookingPage, {once: true});
+  document.addEventListener('keydown', onMainPinEnterPress);
+
+  function onMainPinEnterPress(evt) {
+    window.util.isEnterPressed(evt, activateBookingPage);
+  }
 
   function activateBookingPage() {
+    document.removeEventListener('keydown', onMainPinEnterPress);
     map.classList.remove('map--faded');
     window.util.enableForm(window.mapFiltersForm.form);
     window.adForm.setInitialAdFormAddress();
@@ -95,6 +101,7 @@
     pinMain: mapPinMain,
     reset: resetMap,
     activateBookingPage: activateBookingPage,
+    onMainPinEnterPress: onMainPinEnterPress
   };
 
 })();

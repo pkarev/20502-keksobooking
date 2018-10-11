@@ -10,8 +10,8 @@
     window.card.closeMapCard();
     window.map.reset();
     window.map.pinMain.addEventListener('mouseup', window.map.activateBookingPage, {once: true});
+    document.addEventListener('keydown', window.map.onMainPinEnterPress);
   };
-
 
   function createSuccess() {
     var successElement = successTemplate.cloneNode('true');
@@ -37,5 +37,4 @@
     var success = document.querySelector('.success');
     success.parentNode.removeChild(success);
   }
-
 })();

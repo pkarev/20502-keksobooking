@@ -46,7 +46,6 @@
     updatePins();
   });
 
-
   housingTypeSelect.addEventListener('change', function (evt) {
     window.card.closeMapCard();
     onHousingTypeChange(evt);
