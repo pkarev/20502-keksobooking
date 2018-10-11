@@ -1,11 +1,14 @@
 'use strict';
 
 (function () {
-  var ESC_KEYCODE = 27;
+  var keyCode = {
+    ESC: 27,
+    TAB: 9
+  };
   var DEBOUNCE_INTERVAL = 500;
 
   function isEscPressed(evt, action) {
-    if (evt.keyCode === ESC_KEYCODE) {
+    if (evt.keyCode === keyCode.ESC) {
       action();
     }
   }
@@ -58,6 +61,7 @@
     isEscPressed: isEscPressed,
     getDraggedCoord: getDraggedCoord,
     enableForm: enableForm,
-    debounce: debounce
+    debounce: debounce,
+    keyCode: keyCode
   };
 })();

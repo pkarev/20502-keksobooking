@@ -12,6 +12,12 @@
   var adFormAddress = adForm.querySelector('#address');
   var adFormReset = adForm.querySelector('.ad-form__reset');
 
+  adFormAddress.addEventListener('keydown', function (evt) {
+    if (evt.keyCode !== window.util.keyCode.TAB) {
+      evt.preventDefault();
+    }
+  });
+
   adFormReset.addEventListener('click', function (evt) {
     evt.preventDefault();
     resetAdForm();
