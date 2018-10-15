@@ -5,6 +5,5 @@
 
   function onGetBookingsSuccess(response) {
     window.bookings = response;
-    window.util.enableForm(window.adForm.form);
   }
 })();

@@ -5,17 +5,20 @@
 
   window.onAddNewBookingSuccess = function () {
     document.body.appendChild(createSuccess());
-    window.adForm.resetAdForm();
-    window.mapFiltersForm.clearPins();
-    window.card.closeMapCard();
     window.map.reset();
-    window.map.pinMain.removeEventListener('mousedown', window.map.onMouseDown);
+    window.adForm.resetAdForm();
+    window.card.closeMapCard();
+    window.mapFiltersForm.reset();
+    window.mapFiltersForm.stopTrackingFieldsChanges();
+    window.map.pinMain.removeEventListener('mousedown', window.map.onMainPinMouseDown);
+    window.map.pinMain.addEventListener('mousedown', window.map.onMainPinMouseDown);
     window.map.pinMain.addEventListener('keydown', window.map.onMainPinEnterPress, {once: true});
-    window.map.pinMain.addEventListener('mouseup', window.map.activateBookingPage, {once: true});
+    window.util.disableForm(window.adForm.form);
+    window.validation.turnOffValidation();
   };
 
   function createSuccess() {
-    var successElement = successTemplate.cloneNode('true');
+    var successElement = successTemplate.cloneNode(true);
     document.addEventListener('keydown', onSuccessMessageEscPress);
     document.addEventListener('click', onSuccessMessageClick);
 
@@ -26,11 +29,13 @@
     evt.preventDefault();
     window.util.isEscPressed(evt, closeSuccess);
     document.removeEventListener('keydown', onSuccessMessageEscPress);
+    document.removeEventListener('click', onSuccessMessageClick);
   }
 
   function onSuccessMessageClick(evt) {
     evt.preventDefault();
     closeSuccess();
+    document.removeEventListener('keydown', onSuccessMessageEscPress);
     document.removeEventListener('click', onSuccessMessageClick);
   }
 
