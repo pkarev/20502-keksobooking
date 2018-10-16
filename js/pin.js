@@ -3,16 +3,16 @@
 (function () {
   var MAX_PINS_TO_SHOW = 5;
   var OrdinaryMarkerSize = {
-    width: 50,
-    height: 70
+    WIDTH: 50,
+    HEIGHT: 70
   };
   var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
   function createPin(pinParams, index) {
     var pinElement = mapPinTemplate.cloneNode(true);
 
-    pinElement.style.left = pinParams.location.x - OrdinaryMarkerSize.width / 2 + 'px';
-    pinElement.style.top = pinParams.location.y - OrdinaryMarkerSize.height + 'px';
+    pinElement.style.left = pinParams.location.x - OrdinaryMarkerSize.WIDTH / 2 + 'px';
+    pinElement.style.top = pinParams.location.y - OrdinaryMarkerSize.HEIGHT + 'px';
     pinElement.querySelector('img').src = pinParams.author.avatar;
     pinElement.querySelector('img').alt = pinParams.offer.title;
     pinElement.dataset.id = index;
@@ -40,9 +40,8 @@
   }
 
   window.pin = {
-    ordinaryMarkerWidth: OrdinaryMarkerSize.width,
-    ordinaryMarkerHeight: OrdinaryMarkerSize.height,
-
+    ordinaryMarkerWidth: OrdinaryMarkerSize.WIDTH,
+    ordinaryMarkerHeight: OrdinaryMarkerSize.HEIGHT,
     createPin: createPin,
     renderPins: renderPins,
     clearPinsActiveClass: clearPinsActiveClass

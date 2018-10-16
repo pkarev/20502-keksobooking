@@ -12,7 +12,30 @@
   var accommodationRoomsNumber = document.querySelector('#room_number');
   var accommodationGuestsNumber = document.querySelector('#capacity');
 
-  accommodationTypeSelect.addEventListener('change', function (evt) {
+  var roomsToAvailableGuests = {
+    1: ['для 1 гостя'],
+    2: ['для 2 гостей', 'для 1 гостя'],
+    3: ['для 3 гостей', 'для 2 гостей', 'для 1 гостя'],
+    100: ['не для гостей']
+  };
+
+  function turnOnValidation() {
+    accommodationTypeSelect.addEventListener('change', setPriceForRoomType);
+    accommodationCheckInSelect.addEventListener('change', setCheckoutForCheckin);
+    accommodationCheckOutSelect.addEventListener('change', setCheckinForCheckout);
+    accommodationRoomsNumber.addEventListener('input', setGuestsForRooms);
+    accommodationGuestsNumber.addEventListener('input', updateGuestsCustomValidity);
+  }
+
+  function turnOffValidation() {
+    accommodationTypeSelect.removeEventListener('change', setPriceForRoomType);
+    accommodationCheckInSelect.removeEventListener('change', setCheckoutForCheckin);
+    accommodationCheckOutSelect.removeEventListener('change', setCheckinForCheckout);
+    accommodationRoomsNumber.removeEventListener('input', setGuestsForRooms);
+    accommodationGuestsNumber.removeEventListener('input', updateGuestsCustomValidity);
+  }
+
+  function setPriceForRoomType(evt) {
     var type = evt.target.value;
     switch (type) {
       case 'bungalo':
@@ -30,39 +53,24 @@
       default:
         break;
     }
-  });
+  }
 
-  accommodationCheckInSelect.addEventListener('change', function (evt) {
+  function setCheckoutForCheckin(evt) {
     var checkIn = evt.target.value;
     accommodationCheckOutSelect.querySelector('[value="' + checkIn + '"]').selected = true;
-  });
+  }
 
-  accommodationCheckOutSelect.addEventListener('change', function (evt) {
+  function setCheckinForCheckout(evt) {
     var checkOut = evt.target.value;
     accommodationCheckInSelect.querySelector('[value="' + checkOut + '"]').selected = true;
-  });
-
-  var roomsToAvailableGuests = {
-    1: ['для 1 гостя'],
-    2: ['для 2 гостей', 'для 1 гостя'],
-    3: ['для 3 гостей', 'для 2 гостей', 'для 1 гостя'],
-    100: ['не для гостей']
-  };
-
-  accommodationRoomsNumber.addEventListener('input', function () {
-    setAvailableGuestsOptions();
-  });
-
-  accommodationGuestsNumber.addEventListener('input', function () {
-    updateGuestsCustomValidity();
-  });
+  }
 
   function setAccomodationMinPrice(price) {
     accommodationPriceInput.setAttribute('min', price);
     accommodationPriceInput.setAttribute('placeholder', price);
   }
 
-  function setAvailableGuestsOptions() {
+  function setGuestsForRooms() {
     var rooms = accommodationRoomsNumber.value;
     var availableGuestsOptions = roomsToAvailableGuests[rooms];
     [].forEach.call(accommodationGuestsNumber.options, function (item) {
@@ -84,5 +92,10 @@
     }
   }
 
-  window.setAvailableGuestsOptions = setAvailableGuestsOptions;
+  window.validation = {
+    turnOnValidation: turnOnValidation,
+    turnOffValidation: turnOffValidation,
+    setGuestsForRooms: setGuestsForRooms
+  };
+
 })();

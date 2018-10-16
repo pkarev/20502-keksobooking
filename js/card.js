@@ -2,14 +2,14 @@
 
 (function () {
   var OfferType = {
-    palace: 'Дворец',
-    flat: 'Квартира',
-    house: 'Дом',
-    bungalo: 'Бунгало'
+    PALACE: 'Дворец',
+    FLAT: 'Квартира',
+    HOUSE: 'Дом',
+    BUNGALO: 'Бунгало'
   };
   var map = document.querySelector('.map');
   var mapCard;
-  var isMapCardRendered = false;
+  var popupClose;
 
   function createCardElement(cardParams) {
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
@@ -49,9 +49,8 @@
 
     var cardFeaturesContainer = cardElement.querySelector('.popup__features');
     var featuresArray = cardParams.offer.features;
-    if (featuresArray.length.length > 0) {
+    if (featuresArray.length > 0) {
       var featureElementTemplate = cardElement.querySelector('.popup__feature');
-      featureElementTemplate.classList = 'popup__feature';
       var featuresFragment = document.createDocumentFragment();
       for (var j = 0; j < featuresArray.length; j++) {
         var feature = featureElementTemplate.cloneNode(true);
@@ -70,15 +69,15 @@
   }
 
   function renderMapCard(cardData) {
-    if (isMapCardRendered) {
-      mapCard.innerHTML = window.card.createCardElement(cardData).innerHTML;
+    mapCard = map.querySelector('.map__card');
+    if (mapCard) {
+      mapCard.innerHTML = createCardElement(cardData).innerHTML;
     } else {
-      map.appendChild(window.card.createCardElement(cardData));
+      map.appendChild(createCardElement(cardData));
       mapCard = map.querySelector('.map__card');
-      isMapCardRendered = true;
     }
 
-    var popupClose = map.querySelector('.popup__close');
+    popupClose = map.querySelector('.popup__close');
     popupClose.addEventListener('click', closeMapCard);
     document.addEventListener('keydown', onMapCardEscPress);
 
@@ -89,9 +88,9 @@
     if (!mapCard) {
       return;
     }
-
     window.pin.clearPinsActiveClass();
     document.removeEventListener('keydown', onMapCardEscPress);
+    popupClose.removeEventListener('click', closeMapCard);
     mapCard.style.display = 'none';
   }
 
@@ -110,11 +109,11 @@
   }
 
   function onMapCardEscPress(evt) {
-    window.util.isEscPressed(evt, window.card.closeMapCard);
+    window.util.isEscPressed(evt, closeMapCard);
+    document.removeEventListener('keydown', onMapCardEscPress);
   }
 
   window.card = {
-    createCardElement: createCardElement,
     renderMapCard: renderMapCard,
     closeMapCard: closeMapCard
   };

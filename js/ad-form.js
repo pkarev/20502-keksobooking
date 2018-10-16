@@ -11,57 +11,67 @@
   var mapPinMain = document.querySelector('.map__pin--main');
   var adForm = document.querySelector('.ad-form');
   var adFormAddress = adForm.querySelector('#address');
-  var adFormReset = adForm.querySelector('.ad-form__reset');
+  var adFormPrice = adForm.querySelector('#price');
+  var adFormResetButton = adForm.querySelector('.ad-form__reset');
 
-  adFormAddress.addEventListener('keydown', function (evt) {
-    if (evt.keyCode !== window.util.keyCode.TAB) {
-      evt.preventDefault();
+  setInitialAdFormAddress();
+
+  function onAdFormAddressType(keyPressEvt) {
+    if (keyPressEvt.keyCode !== window.util.KeyCode.TAB) {
+      keyPressEvt.preventDefault();
     }
-  });
+  }
 
-  adFormReset.addEventListener('click', function (evt) {
+  function onAdFormResetClick(evt) {
     evt.preventDefault();
-    resetAdForm();
-    window.mapFiltersForm.clearPins();
-    window.card.closeMapCard();
     window.map.reset();
+    resetAdForm();
+    window.mapFiltersForm.stopTrackingFieldsChanges();
     window.mapFiltersForm.reset();
-    window.map.pinMain.removeEventListener('mousedown', window.map.onMouseDown);
+    document.addEventListener('keydown', window.map.onMainPinEnterPress, {once: true});
     window.map.pinMain.addEventListener('keydown', window.map.onMainPinEnterPress, {once: true});
-    window.map.pinMain.addEventListener('mouseup', window.map.activateBookingPage, {once: true});
-  });
+    window.validation.turnOffValidation();
+  }
 
   function setAdFormAddress() {
     var mapPinMainX = mapPinMain.offsetLeft;
     var mapPinMainY = mapPinMain.offsetTop;
-    var address = (mapPinMainX + MainMarkerSize.WIDTH / 2) + ', ' + (mapPinMainY + MainMarkerSize.TOTAL_HEIGHT);
+    var address = (Math.floor(mapPinMainX + MainMarkerSize.WIDTH / 2)) + ', ' + (mapPinMainY + MainMarkerSize.TOTAL_HEIGHT);
     adFormAddress.setAttribute('value', address);
   }
 
   function setInitialAdFormAddress() {
     var mapPinMainX = mapPinMain.offsetLeft;
     var mapPinMainY = mapPinMain.offsetTop;
-    var address = (mapPinMainX + MainMarkerSize.WIDTH / 2) + ', ' + (mapPinMainY + MainMarkerSize.MARKER_HEIGHT);
+    var address = (Math.floor(mapPinMainX + MainMarkerSize.WIDTH / 2)) + ', ' + (mapPinMainY + MainMarkerSize.MARKER_HEIGHT);
     adFormAddress.setAttribute('value', address);
   }
 
   function resetAdForm() {
     adForm.reset();
-    adFormAddress.setAttribute('value', '');
-    window.map.reset();
-    document.addEventListener('keydown', window.map.onMainPinEnterPress, {once: true});
+    setInitialAdFormAddress();
+    adFormPrice.placeholder = '1000';
+    window.util.disableForm(adForm);
+    adForm.removeEventListener('submit', window.adForm.onAdFormSubmitClick);
+    adFormResetButton.removeEventListener('click', window.adForm.onAdFormResetClick);
+    adFormAddress.removeEventListener('keydown', onAdFormAddressType);
   }
 
-  adForm.addEventListener('submit', function (evt) {
+  function onAdFormSubmitClick(evt) {
     evt.preventDefault();
     window.backend.save(new FormData(adForm), window.onAddNewBookingSuccess, window.error.onAddNewBookingError);
-  });
+  }
 
   window.adForm = {
     setAdFormAddress: setAdFormAddress,
     setInitialAdFormAddress: setInitialAdFormAddress,
     resetAdForm: resetAdForm,
     form: adForm,
-    MainMarkerSize: MainMarkerSize
+    address: adFormAddress,
+    resetButton: adFormResetButton,
+    MainMarkerSize: MainMarkerSize,
+    onAdFormResetClick: onAdFormResetClick,
+    onAdFormSubmitClick: onAdFormSubmitClick,
+    onAdFormAddressType: onAdFormAddressType
   };
 })();

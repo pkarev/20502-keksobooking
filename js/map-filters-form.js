@@ -15,21 +15,25 @@
   var filteredPins;
 
   var onHousingTypeChange = window.util.debounce(function (evt) {
+    window.card.closeMapCard();
     housingTypeFilter = evt.target.value;
     updatePins();
   });
 
   var onhousingPriceChange = window.util.debounce(function (evt) {
+    window.card.closeMapCard();
     housingPriceFilter = evt.target.value;
     updatePins();
   });
 
   var onHousingRoomsChange = window.util.debounce(function (evt) {
+    window.card.closeMapCard();
     housingRoomsFilter = +evt.target.value;
     updatePins();
   });
 
   var onHousingGuestsChange = window.util.debounce(function (evt) {
+    window.card.closeMapCard();
     housingGuestsFilter = +evt.target.value;
     updatePins();
   });
@@ -42,46 +46,31 @@
         return item !== evt.target.value;
       });
     }
-
+    window.card.closeMapCard();
     updatePins();
   });
 
-  housingTypeSelect.addEventListener('change', function (evt) {
-    window.card.closeMapCard();
-    onHousingTypeChange(evt);
-  });
-  housingPriceSelect.addEventListener('change', function (evt) {
-    window.card.closeMapCard();
-    onhousingPriceChange(evt);
-  });
-  housingRoomsSelect.addEventListener('change', function (evt) {
-    window.card.closeMapCard();
-    onHousingRoomsChange(evt);
-  });
-  housingGuestsSelect.addEventListener('change', function (evt) {
-    window.card.closeMapCard();
-    onHousingGuestsChange(evt);
-  });
-  housingFeatures.addEventListener('change', function (evt) {
-    window.card.closeMapCard();
-    onHousingFeaturesChange(evt);
-  });
-
-  function updatePins() {
-    clearPins();
-    filteredPins = applyFilters(window.bookings);
-    window.mapFiltersForm.filteredPins = filteredPins;
-    window.pin.renderPins(filteredPins);
+  function trackFieldsChanges() {
+    housingTypeSelect.addEventListener('change', onHousingTypeChange);
+    housingPriceSelect.addEventListener('change', onhousingPriceChange);
+    housingRoomsSelect.addEventListener('change', onHousingRoomsChange);
+    housingGuestsSelect.addEventListener('change', onHousingGuestsChange);
+    housingFeatures.addEventListener('change', onHousingFeaturesChange);
   }
 
-  function clearPins() {
-    var mapPins = document.querySelectorAll('.map__pin');
-    [].forEach.call(mapPins, function (pin) {
-      if (pin.classList.contains('map__pin--main')) {
-        return;
-      }
-      pin.parentNode.removeChild(pin);
-    });
+  function stopTrackingFieldsChanges() {
+    housingTypeSelect.removeEventListener('change', onHousingTypeChange);
+    housingPriceSelect.removeEventListener('change', onhousingPriceChange);
+    housingRoomsSelect.removeEventListener('change', onHousingRoomsChange);
+    housingGuestsSelect.removeEventListener('change', onHousingGuestsChange);
+    housingFeatures.removeEventListener('change', onHousingFeaturesChange);
+  }
+
+  function updatePins() {
+    window.map.clearPins();
+    filteredPins = applyFilters(window.bookings);
+    window.pin.renderPins(filteredPins);
+    window.mapFiltersForm.filteredPins = filteredPins;
   }
 
   function applyFilters(array) {
@@ -174,13 +163,15 @@
     housingRoomsFilter = null;
     housingGuestsFilter = null;
     housingFeaturesFilter = [];
+    window.util.disableForm(mapFiltersForm);
   }
 
   window.mapFiltersForm = {
     updatePins: updatePins,
-    clearPins: clearPins,
     form: mapFiltersForm,
     filteredPins: filteredPins,
+    trackFieldChanges: trackFieldsChanges,
+    stopTrackingFieldsChanges: stopTrackingFieldsChanges,
     reset: resetMapFilters
   };
 })();
