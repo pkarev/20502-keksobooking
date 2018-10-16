@@ -32,16 +32,15 @@
     error.parentNode.removeChild(error);
   }
 
-  function createError(errorMessage, errorCloseHandler) {
-    var errorElement = errorTemplate.cloneNode('true');
+  function createError(errorMessage, onErrorCloseClick) {
+    var errorElement = errorTemplate.cloneNode(true);
     var error = errorElement.querySelector('.error__message');
 
     if (errorMessage) {
       error.textContent = errorMessage;
     }
 
-    var errorClose = errorElement.querySelector('.error button');
-    errorClose.addEventListener('click', errorCloseHandler);
+    document.addEventListener('click', onErrorCloseClick, {once: true});
 
     return errorElement;
   }

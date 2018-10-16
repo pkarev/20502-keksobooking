@@ -14,7 +14,7 @@
     X_MAX: 1138
   };
 
-  mapPinMain.addEventListener('mouseup', activateBookingPage, {once: true});
+  mapPinMain.addEventListener('mousedown', onMainPinMouseDown);
   mapPinMain.addEventListener('keydown', onMainPinEnterPress, {once: true});
 
   function onMainPinEnterPress(evt) {
@@ -24,24 +24,34 @@
   function activateBookingPage() {
     map.classList.remove('map--faded');
     window.util.enableForm(window.mapFiltersForm.form);
-    window.adForm.setInitialAdFormAddress();
+    window.util.enableForm(window.adForm.form);
     window.mapFiltersForm.updatePins(window.mapFiltersForm.filteredPins);
-    window.setAvailableGuestsOptions();
-
-    mapPinMain.addEventListener('mousedown', onMouseDown);
+    window.mapFiltersForm.trackFieldChanges();
+    map.addEventListener('click', onMapPinClick);
+    window.validation.setGuestsForRooms();
+    window.adForm.address.addEventListener('keydown', window.adForm.onAdFormAddressType);
+    window.adForm.form.addEventListener('submit', window.adForm.onAdFormSubmitClick);
+    window.adForm.resetButton.addEventListener('click', window.adForm.onAdFormResetClick);
+    window.validation.turnOnValidation();
+    mapPinMain.removeEventListener('keydown', onMainPinEnterPress);
   }
 
-  function onMouseDown(downEvt) {
+  function onMainPinMouseDown(downEvt) {
     downEvt.preventDefault();
     var currentCoords = {
       x: mapPinMain.clientX,
       y: mapPinMain.clientY
     };
+
+    var dragged = false;
+    var activated = false;
+
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
 
     function onMouseMove(moveEvt) {
       moveEvt.preventDefault();
+      dragged = true;
 
       var shift = {
         y: currentCoords.y - moveEvt.clientY,
@@ -64,11 +74,21 @@
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      window.adForm.setAdFormAddress();
+
+      if (!dragged) {
+        return;
+      }
+
+      if (activated) {
+        return;
+      }
+
+      activated = true;
+      activateBookingPage();
     }
   }
 
-  map.addEventListener('click', function (evt) {
+  function onMapPinClick(evt) {
     var target = evt.target;
 
     while (target !== map) {
@@ -82,20 +102,33 @@
 
       target = target.parentNode;
     }
-  });
+  }
+
+  function clearPins() {
+    var mapPins = document.querySelectorAll('.map__pin');
+    [].forEach.call(mapPins, function (pin) {
+      if (pin.classList.contains('map__pin--main')) {
+        return;
+      }
+      pin.parentNode.removeChild(pin);
+    });
+  }
 
   function resetMap() {
+    clearPins();
+    window.card.closeMapCard();
     mapPinMain.style.left = MapPinMainInitalPosition.x + 'px';
     mapPinMain.style.top = MapPinMainInitalPosition.y + 'px';
     map.classList.add('map--faded');
+    map.removeEventListener('click', onMapPinClick);
   }
 
   window.map = {
     pinMain: mapPinMain,
     reset: resetMap,
-    activateBookingPage: activateBookingPage,
+    clearPins: clearPins,
     onMainPinEnterPress: onMainPinEnterPress,
-    onMouseDown: onMouseDown
+    onMainPinMouseDown: onMainPinMouseDown
   };
 
 })();

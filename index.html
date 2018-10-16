@@ -178,7 +178,7 @@
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="description">Описание (не обязательно)</label>
-          <textarea id="description" name="description" placeholder="Здесь расскажите о том, какое ваше жилье замечательное и вообще"></textarea>
+          <textarea id="description" name="description" placeholder="Здесь расскажите о том, какое ваше жилье замечательное и вообще" disabled></textarea>
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label">Фотографии жилья</label>
@@ -191,8 +191,8 @@
           </div>
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--submit">
-          <button class="ad-form__submit" type="submit">Опубликовать</button>
-          или <button class="ad-form__reset" type="reset">очистить</button>
+          <button class="ad-form__submit" type="submit" disabled>Опубликовать</button>
+          или <button class="ad-form__reset" type="reset" disabled>очистить</button>
         </fieldset>
       </form>
     </section>
@@ -225,12 +225,7 @@
       <p class="popup__text popup__text--capacity">2 комнаты для 3 гостей</p>
       <p class="popup__text popup__text--time">Заезд после 14:00, выезд до 10:00</p>
       <ul class="popup__features">
-        <li class="popup__feature popup__feature--wifi"></li>
-        <li class="popup__feature popup__feature--dishwasher"></li>
-        <li class="popup__feature popup__feature--parking"></li>
-        <li class="popup__feature popup__feature--washer"></li>
-        <li class="popup__feature popup__feature--elevator"></li>
-        <li class="popup__feature popup__feature--conditioner"></li>
+        <li class="popup__feature"></li>
       </ul>
       <p class="popup__description">Великолепная квартира-студия в центре Токио. Подходит как туристам, так и бизнесменам. Квартира полностью укомплектована и недавно отремонтирована.</p>
       <div class="popup__photos">
@@ -260,11 +255,11 @@
   </template>
 
   <script src="js/util.js"></script>
+  <script src="js/backend.js"></script>
   <script src="js/ad-form.js"></script>
   <script src="js/map.js"></script>
   <script src="js/error.js"></script>
   <script src="js/success.js"></script>
-  <script src="js/backend.js"></script>
   <script src="js/data.js"></script>
   <script src="js/map-filters-form.js"></script>
   <script src="js/pin.js"></script>
